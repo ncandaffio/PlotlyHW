@@ -14,9 +14,36 @@ function buildMetadata(sample) {
 
 
 function buildCharts(sample) {
-
-  console.log('build charts')
-}
+    d3.json(`/samples/${sample}`).then(function(result) {
+      var otu_ids = Object.values(result.otu_ids);
+      var sample_values = Object.values(result.sample_values);
+      var otu_labels = Object.values(result.otu_labels);
+      console.log(otu_ids);
+      console.log(sample_values);
+      console.log(otu_labels);
+      var layout1 = {};
+      var trace1 = [{
+        labels: otu_ids,
+        values: sample_values,
+        hovertext: otu_labels,  
+        type: "pie"
+      }];
+      Plotly.newPlot("pie", trace1, layout1);
+      var layout2 = {};
+      var trace2 = [{
+        x: otu_ids,
+        y: sample_values,
+        text: otu_labels,
+        marker: {
+          color: otu_ids,
+          size: sample_values
+        },
+        mode: "markers",
+        type: "scatter"
+      }];
+      Plotly.plot("bubble", trace2, layout2);
+    });
+  };
 
 function init() {
   // Grab a reference to the dropdown select element
