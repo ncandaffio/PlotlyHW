@@ -14,7 +14,9 @@ function buildMetadata(sample) {
 
 
 function buildCharts(sample) {
+  function buildPie(sample){
     d3.json(`/samples/${sample}`).then(function(result) {
+      
       var otu_ids = Object.values(result.otu_ids);
       var sample_values = Object.values(result.sample_values);
       var otu_labels = Object.values(result.otu_labels);
@@ -22,27 +24,34 @@ function buildCharts(sample) {
       console.log(sample_values);
       console.log(otu_labels);
       var layout1 = {};
-      var trace1 = [{
+      var data = {
         labels: otu_ids,
         values: sample_values,
-        hovertext: otu_labels,  
-        type: "pie"
-      }];
-      Plotly.newPlot("pie", trace1, layout1);
-      var layout2 = {};
-      var trace2 = [{
-        x: otu_ids,
-        y: sample_values,
-        text: otu_labels,
-        marker: {
-          color: otu_ids,
-          size: sample_values
-        },
-        mode: "markers",
-        type: "scatter"
-      }];
-      Plotly.plot("bubble", trace2, layout2);
-    });
+        hovertext: otu_labels
+      }
+      var data_sorted = data.sort((a, b) => (a.sample_values > b.sample_values) ? 1 : -1)
+      console.log(data_sorted)
+      // var trace1 = [{  
+      //   type: "pie"
+      // }];
+      // Plotly.newPlot("pie", trace1, layout1);
+  });
+  buildPie(sample);
+  };
+    //   var layout2 = {textposition: 'inside'};
+    //   var trace2 = [{
+    //     x: otu_ids,
+    //     y: sample_values,
+    //     text: otu_labels,
+    //     marker: {
+    //       color: otu_ids,
+    //       size: sample_values
+    //     },
+    //     mode: "markers",
+    //     type: "scatter"
+    //   }];
+    //   Plotly.plot("bubble", trace2, layout2);
+    // });
   };
 
 function init() {
