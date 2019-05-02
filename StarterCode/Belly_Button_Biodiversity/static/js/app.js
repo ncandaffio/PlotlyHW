@@ -20,22 +20,39 @@ function buildCharts(sample) {
       var otu_ids = Object.values(result.otu_ids);
       var sample_values = Object.values(result.sample_values);
       var otu_labels = Object.values(result.otu_labels);
-      console.log(otu_ids);
-      console.log(sample_values);
-      console.log(otu_labels);
       var layout1 = {};
-      var data = {
-        labels: otu_ids,
-        values: sample_values,
-        hovertext: otu_labels
-      }
-      var data_sorted = data.sort((a, b) => (a.sample_values > b.sample_values) ? 1 : -1)
-      console.log(data_sorted)
-      // var trace1 = [{  
-      //   type: "pie"
-      // }];
-      // Plotly.newPlot("pie", trace1, layout1);
+      var data = []
+      for (var i = 0; i < sample_values.length; i++) {
+        var line = {
+          id: otu_ids[i],
+          value: sample_values[i],
+          label: otu_labels[i]
+        }
+        data.push(line)
+      };
+      var sorted_data = data.sort((a, b) => {
+        return b.value - a.value
+      });
+      var top_ten = sorted_data.slice(0,10);
+      var ids = [];
+      var values = [];
+      var labels = [];
+
+      top_ten.forEach(function(r) {
+        ids.push(r.id);
+        values.push(r.value);
+        labels.push(r.label);
+      });
+
+      var trace1 = [{
+        labels: ids,
+        values: values,
+        hoverinfo: labels,
+        type: "pie"
+      }];
+      Plotly.newPlot("pie", trace1, layout1);
   });
+}
   buildPie(sample);
   };
     //   var layout2 = {textposition: 'inside'};
@@ -52,7 +69,8 @@ function buildCharts(sample) {
     //   }];
     //   Plotly.plot("bubble", trace2, layout2);
     // });
-  };
+
+  //};
 
 function init() {
   // Grab a reference to the dropdown select element
