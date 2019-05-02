@@ -36,18 +36,19 @@ function buildCharts(sample) {
       var top_ten = sorted_data.slice(0,10);
       var ids = [];
       var values = [];
-      var labels = [];
+      var hover = [];
 
       top_ten.forEach(function(r) {
         ids.push(r.id);
         values.push(r.value);
-        labels.push(r.label);
+        hover.push(r.label);
       });
-
+      
       var trace1 = [{
         labels: ids,
         values: values,
-        hoverinfo: labels,
+        text: hover,
+        hoverinfo: "text",
         type: "pie"
       }];
       Plotly.newPlot("pie", trace1, layout1);
