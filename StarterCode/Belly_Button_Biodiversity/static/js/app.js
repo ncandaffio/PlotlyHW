@@ -1,7 +1,7 @@
 function buildMetadata(sample) {
   //Grab container for the metadata
   var metadataContainer = d3.select("#sample-metadata")
-
+  metadataContainer.selectAll("p").remove()
   //Resquest the metadata for the sample via Flask and populate to the container
   d3.json(`/metadata/${sample}`).then(function(request){
     //console.log(Object.keys(request))
@@ -47,31 +47,38 @@ function buildCharts(sample) {
       var trace1 = [{
         labels: ids,
         values: values,
-        text: hover,
         hoverinfo: "text",
+        hovertext: hover,
         type: "pie"
       }];
       Plotly.newPlot("pie", trace1, layout1);
-  });
-}
-  buildPie(sample);
+  })
   };
-    //   var layout2 = {textposition: 'inside'};
-    //   var trace2 = [{
-    //     x: otu_ids,
-    //     y: sample_values,
-    //     text: otu_labels,
-    //     marker: {
-    //       color: otu_ids,
-    //       size: sample_values
-    //     },
-    //     mode: "markers",
-    //     type: "scatter"
-    //   }];
-    //   Plotly.plot("bubble", trace2, layout2);
-    // });
+  
+  function buildScatter(sample) {
+    d3.json(`/samples/${sample}`).then(function(result) {
+      var otu_ids = Object.values(result.otu_ids);
+      var sample_values = Object.values(result.sample_values);
+      var otu_labels = Object.values(result.otu_labels);
+      var layout2 = {textposition: 'inside'};
+      var trace2 = [{
+        x: otu_ids,
+        y: sample_values,
+        text: otu_labels,
+        marker: {
+          color: otu_ids,
+          size: sample_values
+        },
+        mode: "markers",
+        type: "scatter"
+      }];
+      Plotly.plot("bubble", trace2, layout2);
+    })
+  }
 
-  //};
+  buildPie(sample);
+  buildScatter(sample);
+}
 
 function init() {
   // Grab a reference to the dropdown select element
